@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { 
   X, ArrowLeft, Check, CreditCard, Banknote, QrCode, 
   MapPin, Phone, User, Mail, ShoppingBag, ChevronRight,
-  Sparkles, Clock, Package
+  Sparkles, Clock, Package, PartyPopper
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,21 +22,24 @@ const paymentMethods = [
     name: 'Cash on Delivery',
     description: 'Pay when your order arrives',
     icon: Banknote,
-    color: 'bg-bakery-green',
+    gradient: 'from-bakery-green to-bakery-matcha',
+    shadow: 'shadow-bakery-green/30',
   },
   {
     id: 'transfer' as PaymentMethod,
     name: 'Bank Transfer',
     description: 'Transfer to our bank account',
     icon: CreditCard,
-    color: 'bg-bakery-chocolate',
+    gradient: 'from-bakery-chocolate-light to-bakery-chocolate',
+    shadow: 'shadow-bakery-chocolate/30',
   },
   {
     id: 'qris' as PaymentMethod,
     name: 'QRIS',
     description: 'Scan QR code to pay',
     icon: QrCode,
-    color: 'bg-bakery-pink-deep',
+    gradient: 'from-bakery-pink-deep to-bakery-red-velvet',
+    shadow: 'shadow-bakery-pink/30',
   },
 ]
 
@@ -49,7 +52,7 @@ interface CustomerDetails {
 }
 
 export function Checkout() {
-  const { items, getTotal, getItemCount, clearCart, getItemTotal } = useCartStore()
+  const { items, getTotal, getItemCount, clearCart, getItemTotal, closeCart } = useCartStore()
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState<CheckoutStep>('details')
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(null)
@@ -91,6 +94,7 @@ export function Checkout() {
 
   const handleCompleteOrder = () => {
     clearCart()
+    closeCart()
     handleCloseCheckout()
   }
 
@@ -101,7 +105,7 @@ export function Checkout() {
       <Button
         onClick={handleOpenCheckout}
         disabled={items.length === 0}
-        className="w-full gap-2 bg-bakery-green py-6 font-bold text-white shadow-xl shadow-bakery-green/30 transition-all hover:bg-bakery-green/90 hover:shadow-2xl hover:scale-[1.02] btn-press disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full gap-2 bg-gradient-to-r from-bakery-green to-bakery-matcha py-7 font-bold text-white shadow-xl shadow-bakery-green/30 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] btn-press shine-sweep overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         size="lg"
       >
         <ShoppingBag className="h-5 w-5" />
@@ -114,17 +118,17 @@ export function Checkout() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-[60] bg-bakery-chocolate/80 backdrop-blur-md animate-fade-in"
+        className="fixed inset-0 z-[60] bg-bakery-chocolate/80 backdrop-blur-lg animate-fade-in"
         onClick={handleCloseCheckout}
       />
 
-      {/* Checkout Modal */}
+      {/* Checkout Modal with enhanced styling */}
       <div className="fixed inset-4 z-[60] mx-auto max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl animate-scale-in md:inset-y-8">
         <div className="flex h-full flex-col">
-          {/* Header */}
+          {/* Header with rich styling */}
           <div className="relative overflow-hidden border-b border-bakery-pink/30 px-6 py-5">
             <div className="absolute inset-0 bg-gradient-to-r from-bakery-green/10 via-bakery-cream to-bakery-pink/10" />
-            <div className="absolute inset-0 texture-dots" />
+            <div className="absolute inset-0 texture-dots opacity-30" />
             
             <div className="relative flex items-center justify-between">
               {step !== 'details' && step !== 'confirmation' ? (
@@ -132,12 +136,12 @@ export function Checkout() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setStep('details')}
-                  className="h-10 w-10 rounded-full bg-white/80 shadow-sm hover:bg-white"
+                  className="h-11 w-11 rounded-full bg-white/80 shadow-md transition-all duration-300 hover:bg-white hover:scale-110"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               ) : (
-                <div className="h-10 w-10" />
+                <div className="h-11 w-11" />
               )}
               
               <div className="text-center">
@@ -158,20 +162,20 @@ export function Checkout() {
                   variant="ghost"
                   size="icon"
                   onClick={handleCloseCheckout}
-                  className="h-10 w-10 rounded-full bg-white/80 shadow-sm hover:bg-white"
+                  className="h-11 w-11 rounded-full bg-white/80 shadow-md transition-all duration-300 hover:bg-white hover:scale-110"
                 >
                   <X className="h-5 w-5" />
                 </Button>
               ) : (
-                <div className="h-10 w-10" />
+                <div className="h-11 w-11" />
               )}
             </div>
 
-            {/* Progress indicator */}
+            {/* Progress indicator with animation */}
             {step !== 'confirmation' && (
-              <div className="relative mt-4 flex gap-2">
-                <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === 'details' || step === 'payment' ? 'bg-bakery-green' : 'bg-bakery-pink/30'}`} />
-                <div className={`h-1.5 flex-1 rounded-full transition-colors ${step === 'payment' ? 'bg-bakery-green' : 'bg-bakery-pink/30'}`} />
+              <div className="relative mt-5 flex gap-2">
+                <div className={`h-2 flex-1 rounded-full transition-all duration-500 ${step === 'details' || step === 'payment' ? 'bg-gradient-to-r from-bakery-green to-bakery-matcha' : 'bg-bakery-pink/30'}`} />
+                <div className={`h-2 flex-1 rounded-full transition-all duration-500 ${step === 'payment' ? 'bg-gradient-to-r from-bakery-green to-bakery-matcha' : 'bg-bakery-pink/30'}`} />
               </div>
             )}
           </div>
@@ -181,10 +185,12 @@ export function Checkout() {
             {/* Details Step */}
             {step === 'details' && (
               <form onSubmit={handleSubmitDetails} className="p-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="flex items-center gap-2 text-bakery-chocolate">
-                      <User className="h-4 w-4" />
+                    <Label htmlFor="name" className="flex items-center gap-2 text-bakery-chocolate font-semibold">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-bakery-green/10">
+                        <User className="h-4 w-4 text-bakery-green" />
+                      </div>
                       Full Name
                     </Label>
                     <Input
@@ -192,14 +198,16 @@ export function Checkout() {
                       placeholder="John Doe"
                       value={customerDetails.name}
                       onChange={(e) => setCustomerDetails(prev => ({ ...prev, name: e.target.value }))}
-                      className="border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20"
+                      className="h-12 border-2 border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20 rounded-xl transition-all duration-300"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="flex items-center gap-2 text-bakery-chocolate">
-                      <Phone className="h-4 w-4" />
+                    <Label htmlFor="phone" className="flex items-center gap-2 text-bakery-chocolate font-semibold">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-bakery-green/10">
+                        <Phone className="h-4 w-4 text-bakery-green" />
+                      </div>
                       Phone Number
                     </Label>
                     <Input
@@ -208,14 +216,16 @@ export function Checkout() {
                       placeholder="08123456789"
                       value={customerDetails.phone}
                       onChange={(e) => setCustomerDetails(prev => ({ ...prev, phone: e.target.value }))}
-                      className="border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20"
+                      className="h-12 border-2 border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20 rounded-xl transition-all duration-300"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="flex items-center gap-2 text-bakery-chocolate">
-                      <Mail className="h-4 w-4" />
+                    <Label htmlFor="email" className="flex items-center gap-2 text-bakery-chocolate font-semibold">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-bakery-pink/10">
+                        <Mail className="h-4 w-4 text-bakery-pink-deep" />
+                      </div>
                       Email (Optional)
                     </Label>
                     <Input
@@ -224,13 +234,15 @@ export function Checkout() {
                       placeholder="john@example.com"
                       value={customerDetails.email}
                       onChange={(e) => setCustomerDetails(prev => ({ ...prev, email: e.target.value }))}
-                      className="border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20"
+                      className="h-12 border-2 border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20 rounded-xl transition-all duration-300"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="address" className="flex items-center gap-2 text-bakery-chocolate">
-                      <MapPin className="h-4 w-4" />
+                    <Label htmlFor="address" className="flex items-center gap-2 text-bakery-chocolate font-semibold">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-bakery-green/10">
+                        <MapPin className="h-4 w-4 text-bakery-green" />
+                      </div>
                       Delivery Address
                     </Label>
                     <textarea
@@ -238,13 +250,13 @@ export function Checkout() {
                       placeholder="Enter your full delivery address"
                       value={customerDetails.address}
                       onChange={(e) => setCustomerDetails(prev => ({ ...prev, address: e.target.value }))}
-                      className="min-h-[100px] w-full rounded-lg border border-bakery-pink/30 bg-background px-3 py-2 text-sm focus:border-bakery-green focus:outline-none focus:ring-2 focus:ring-bakery-green/20"
+                      className="min-h-[100px] w-full rounded-xl border-2 border-bakery-pink/30 bg-background px-4 py-3 text-sm transition-all duration-300 focus:border-bakery-green focus:outline-none focus:ring-2 focus:ring-bakery-green/20 resize-none"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="notes" className="text-bakery-chocolate">
+                    <Label htmlFor="notes" className="text-bakery-chocolate font-semibold">
                       Order Notes (Optional)
                     </Label>
                     <Input
@@ -252,37 +264,54 @@ export function Checkout() {
                       placeholder="Any special instructions?"
                       value={customerDetails.notes}
                       onChange={(e) => setCustomerDetails(prev => ({ ...prev, notes: e.target.value }))}
-                      className="border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20"
+                      className="h-12 border-2 border-bakery-pink/30 focus:border-bakery-green focus:ring-bakery-green/20 rounded-xl transition-all duration-300"
                     />
                   </div>
                 </div>
 
                 {/* Order Summary */}
-                <div className="mt-6 rounded-2xl bg-bakery-cream/50 p-4">
-                  <h3 className="mb-3 font-semibold text-bakery-chocolate">Order Summary</h3>
-                  <div className="max-h-32 space-y-2 overflow-y-auto">
+                <div className="mt-6 rounded-2xl bg-gradient-to-br from-bakery-cream/60 to-bakery-pink/10 p-5 border border-bakery-pink/20">
+                  <h3 className="mb-4 font-bold text-bakery-chocolate flex items-center gap-2">
+                    <ShoppingBag className="h-5 w-5 text-bakery-green" />
+                    Order Summary
+                  </h3>
+                  <div className="max-h-36 space-y-3 overflow-y-auto">
                     {items.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          {item.quantity}x {item.cookie.name}
-                          {item.addOns.length > 0 && (
-                            <span className="text-xs"> (+{item.addOns.length} add-on{item.addOns.length > 1 ? 's' : ''})</span>
-                          )}
-                        </span>
-                        <span className="font-medium text-bakery-chocolate">{formatPrice(getItemTotal(item))}</span>
+                      <div key={item.id} className="flex items-center justify-between text-sm bg-white/60 rounded-lg p-2">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="h-8 w-8 rounded-lg overflow-hidden"
+                            style={{ backgroundColor: item.cookie.bgColor }}
+                          >
+                            <Image
+                              src={item.cookie.image}
+                              alt={item.cookie.name}
+                              width={32}
+                              height={32}
+                              className="object-cover"
+                            />
+                          </div>
+                          <span className="text-muted-foreground">
+                            {item.quantity}x {item.cookie.name}
+                            {item.addOns.length > 0 && (
+                              <span className="text-xs text-bakery-green ml-1">(+{item.addOns.length})</span>
+                            )}
+                          </span>
+                        </div>
+                        <span className="font-semibold text-bakery-chocolate">{formatPrice(getItemTotal(item))}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-3 flex items-center justify-between border-t border-bakery-pink/30 pt-3">
-                    <span className="font-semibold text-bakery-chocolate">Total ({getItemCount()} items)</span>
-                    <span className="text-lg font-bold text-bakery-green">{formatPrice(getTotal())}</span>
+                  <div className="mt-4 flex items-center justify-between border-t-2 border-dashed border-bakery-pink/30 pt-4">
+                    <span className="font-bold text-bakery-chocolate">Total ({getItemCount()} items)</span>
+                    <span className="text-2xl font-black text-bakery-green">{formatPrice(getTotal())}</span>
                   </div>
                 </div>
 
                 <Button
                   type="submit"
                   disabled={!isDetailsValid}
-                  className="mt-6 w-full gap-2 bg-bakery-green py-6 font-bold text-white shadow-lg shadow-bakery-green/30 btn-press disabled:opacity-50"
+                  className="mt-6 w-full gap-2 bg-gradient-to-r from-bakery-green to-bakery-matcha py-7 font-bold text-white shadow-xl shadow-bakery-green/30 btn-press transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
                   size="lg"
                 >
                   Continue to Payment
@@ -294,31 +323,32 @@ export function Checkout() {
             {/* Payment Step */}
             {step === 'payment' && (
               <div className="p-6">
-                <div className="space-y-3">
-                  {paymentMethods.map((method) => {
+                <div className="space-y-4">
+                  {paymentMethods.map((method, i) => {
                     const Icon = method.icon
                     const isSelected = selectedPayment === method.id
                     return (
                       <button
                         key={method.id}
                         onClick={() => setSelectedPayment(method.id)}
-                        className={`flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all duration-300 btn-press ${
+                        className={`flex w-full items-center gap-4 rounded-2xl border-2 p-5 text-left transition-all duration-300 btn-press animate-slide-up-stagger ${
                           isSelected
-                            ? 'border-bakery-green bg-bakery-green/10 shadow-lg shadow-bakery-green/20'
-                            : 'border-bakery-pink/30 bg-white hover:border-bakery-pink hover:bg-bakery-cream/30'
+                            ? 'border-bakery-green bg-gradient-to-r from-bakery-green/10 to-bakery-matcha/10 shadow-lg shadow-bakery-green/20'
+                            : 'border-bakery-pink/30 bg-white hover:border-bakery-pink hover:bg-bakery-cream/30 hover:shadow-md'
                         }`}
+                        style={{ animationDelay: `${i * 0.1}s` }}
                       >
-                        <div className={`flex h-14 w-14 items-center justify-center rounded-xl ${method.color} shadow-lg`}>
-                          <Icon className="h-7 w-7 text-white" />
+                        <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${method.gradient} shadow-lg ${method.shadow} transition-all duration-300 ${isSelected ? 'scale-110' : ''}`}>
+                          <Icon className="h-8 w-8 text-white" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-bold text-bakery-chocolate">{method.name}</h3>
+                          <h3 className="font-bold text-bakery-chocolate text-lg">{method.name}</h3>
                           <p className="text-sm text-muted-foreground">{method.description}</p>
                         </div>
-                        <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all ${
-                          isSelected ? 'border-bakery-green bg-bakery-green' : 'border-muted-foreground/30'
+                        <div className={`flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                          isSelected ? 'border-bakery-green bg-bakery-green scale-110' : 'border-muted-foreground/30'
                         }`}>
-                          {isSelected && <Check className="h-4 w-4 text-white" />}
+                          {isSelected && <Check className="h-4 w-4 text-white animate-scale-bounce" />}
                         </div>
                       </button>
                     )
@@ -327,41 +357,47 @@ export function Checkout() {
 
                 {/* Payment details based on selection */}
                 {selectedPayment && (
-                  <div className="mt-6 animate-slide-up rounded-2xl bg-bakery-cream/50 p-4">
+                  <div className="mt-6 animate-scale-in rounded-2xl bg-gradient-to-br from-bakery-cream/60 to-bakery-pink/10 p-5 border border-bakery-pink/20">
                     {selectedPayment === 'cash' && (
                       <div className="text-center">
-                        <Banknote className="mx-auto mb-3 h-12 w-12 text-bakery-green" />
-                        <h3 className="font-bold text-bakery-chocolate">Cash on Delivery</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          Please prepare exact amount of <span className="font-bold text-bakery-green">{formatPrice(getTotal())}</span> when the courier arrives.
+                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-bakery-green to-bakery-matcha shadow-lg">
+                          <Banknote className="h-8 w-8 text-white" />
+                        </div>
+                        <h3 className="font-bold text-bakery-chocolate text-lg">Cash on Delivery</h3>
+                        <p className="mt-3 text-muted-foreground">
+                          Please prepare exact amount of <span className="font-black text-bakery-green text-xl">{formatPrice(getTotal())}</span> when the courier arrives.
                         </p>
                       </div>
                     )}
                     {selectedPayment === 'transfer' && (
                       <div className="text-center">
-                        <CreditCard className="mx-auto mb-3 h-12 w-12 text-bakery-chocolate" />
-                        <h3 className="font-bold text-bakery-chocolate">Bank Transfer</h3>
-                        <div className="mt-3 rounded-xl bg-white p-3 text-left">
-                          <p className="text-xs text-muted-foreground">Bank BCA</p>
-                          <p className="font-mono text-lg font-bold text-bakery-chocolate">1234 5678 9012</p>
-                          <p className="text-sm text-muted-foreground">a/n Bite Ur Cookies</p>
+                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-bakery-chocolate-light to-bakery-chocolate shadow-lg">
+                          <CreditCard className="h-8 w-8 text-white" />
                         </div>
-                        <p className="mt-3 text-sm text-muted-foreground">
-                          Transfer <span className="font-bold text-bakery-green">{formatPrice(getTotal())}</span> and send proof via WhatsApp
+                        <h3 className="font-bold text-bakery-chocolate text-lg">Bank Transfer</h3>
+                        <div className="mt-4 rounded-xl bg-white p-4 text-left shadow-inner">
+                          <p className="text-xs text-muted-foreground font-semibold">Bank BCA</p>
+                          <p className="font-mono text-2xl font-black text-bakery-chocolate mt-1">1234 5678 9012</p>
+                          <p className="text-sm text-muted-foreground mt-1">a/n Bite Ur Cookies</p>
+                        </div>
+                        <p className="mt-4 text-muted-foreground">
+                          Transfer <span className="font-black text-bakery-green">{formatPrice(getTotal())}</span> and send proof via WhatsApp
                         </p>
                       </div>
                     )}
                     {selectedPayment === 'qris' && (
                       <div className="text-center">
-                        <QrCode className="mx-auto mb-3 h-12 w-12 text-bakery-pink-deep" />
-                        <h3 className="font-bold text-bakery-chocolate">QRIS Payment</h3>
-                        <div className="mx-auto mt-3 h-40 w-40 rounded-xl bg-white p-2 shadow-inner">
-                          <div className="flex h-full w-full items-center justify-center rounded-lg bg-bakery-cream/50">
-                            <p className="text-xs text-muted-foreground">QR Code will appear here</p>
+                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-bakery-pink-deep to-bakery-red-velvet shadow-lg">
+                          <QrCode className="h-8 w-8 text-white" />
+                        </div>
+                        <h3 className="font-bold text-bakery-chocolate text-lg">QRIS Payment</h3>
+                        <div className="mx-auto mt-4 h-44 w-44 rounded-2xl bg-white p-3 shadow-inner">
+                          <div className="flex h-full w-full items-center justify-center rounded-xl bg-bakery-cream/50 border-2 border-dashed border-bakery-pink/30">
+                            <p className="text-xs text-muted-foreground px-4 text-center">QR Code will appear here after confirmation</p>
                           </div>
                         </div>
-                        <p className="mt-3 text-sm text-muted-foreground">
-                          Scan to pay <span className="font-bold text-bakery-green">{formatPrice(getTotal())}</span>
+                        <p className="mt-4 text-muted-foreground">
+                          Scan to pay <span className="font-black text-bakery-green">{formatPrice(getTotal())}</span>
                         </p>
                       </div>
                     )}
@@ -369,22 +405,22 @@ export function Checkout() {
                 )}
 
                 {/* Total and confirm */}
-                <div className="mt-6 rounded-xl bg-gradient-to-r from-bakery-cream to-bakery-pink/20 p-4">
+                <div className="mt-6 rounded-xl bg-gradient-to-r from-bakery-cream to-bakery-pink/20 p-5 border border-bakery-pink/20">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-bakery-chocolate">Total to Pay</span>
-                    <span className="text-2xl font-bold text-bakery-green">{formatPrice(getTotal())}</span>
+                    <span className="font-semibold text-bakery-chocolate">Total to Pay</span>
+                    <span className="text-3xl font-black text-bakery-green">{formatPrice(getTotal())}</span>
                   </div>
                 </div>
 
                 <Button
                   onClick={handleConfirmOrder}
                   disabled={!selectedPayment || isSubmitting}
-                  className="mt-6 w-full gap-2 bg-bakery-green py-6 font-bold text-white shadow-lg shadow-bakery-green/30 btn-press disabled:opacity-50"
+                  className="mt-6 w-full gap-2 bg-gradient-to-r from-bakery-green to-bakery-matcha py-7 font-bold text-white shadow-xl shadow-bakery-green/30 btn-press transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
                   size="lg"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <div className="h-5 w-5 animate-spin rounded-full border-3 border-white border-t-transparent" />
                       Processing...
                     </>
                   ) : (
@@ -400,49 +436,54 @@ export function Checkout() {
             {/* Confirmation Step */}
             {step === 'confirmation' && (
               <div className="flex flex-col items-center p-6 text-center">
-                <div className="relative mb-6">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-bakery-green shadow-xl shadow-bakery-green/30 animate-scale-in">
-                    <Check className="h-12 w-12 text-white" />
+                <div className="relative mb-8">
+                  {/* Celebration burst */}
+                  <div className="absolute inset-0 animate-ping rounded-full bg-bakery-green/30 scale-150" />
+                  <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-bakery-green to-bakery-matcha shadow-2xl shadow-bakery-green/40 animate-scale-bounce">
+                    <Check className="h-14 w-14 text-white" />
                   </div>
-                  <div className="absolute -right-2 -top-2 animate-bounce-subtle">
-                    <Sparkles className="h-8 w-8 text-bakery-gold" />
+                  <div className="absolute -right-3 -top-3 animate-bounce-subtle">
+                    <PartyPopper className="h-10 w-10 text-bakery-gold" />
+                  </div>
+                  <div className="absolute -left-2 bottom-0 animate-bounce-subtle" style={{ animationDelay: '0.3s' }}>
+                    <Sparkles className="h-8 w-8 text-bakery-pink" />
                   </div>
                 </div>
 
-                <h3 className="mb-2 font-serif text-2xl font-bold text-bakery-chocolate">
+                <h3 className="mb-3 font-serif text-3xl font-bold text-bakery-chocolate">
                   Order Confirmed!
                 </h3>
-                <p className="mb-6 text-muted-foreground">
+                <p className="mb-8 text-muted-foreground text-lg">
                   Your delicious cookies are being prepared
                 </p>
 
-                <div className="mb-6 w-full rounded-2xl bg-bakery-cream/50 p-4">
-                  <p className="text-sm text-muted-foreground">Order Number</p>
-                  <p className="font-mono text-2xl font-bold text-bakery-green">{orderNumber}</p>
+                <div className="mb-6 w-full rounded-2xl bg-gradient-to-r from-bakery-cream to-bakery-pink/20 p-5 border border-bakery-pink/20">
+                  <p className="text-sm text-muted-foreground font-semibold">Order Number</p>
+                  <p className="font-mono text-3xl font-black text-bakery-green mt-1">{orderNumber}</p>
                 </div>
 
                 <div className="mb-6 grid w-full grid-cols-2 gap-4">
-                  <div className="rounded-xl bg-bakery-pink/20 p-4">
-                    <Clock className="mx-auto mb-2 h-6 w-6 text-bakery-pink-deep" />
-                    <p className="text-xs text-muted-foreground">Estimated Time</p>
-                    <p className="font-bold text-bakery-chocolate">30-45 mins</p>
+                  <div className="rounded-2xl bg-gradient-to-br from-bakery-pink/20 to-bakery-pink/10 p-5 border border-bakery-pink/20">
+                    <Clock className="mx-auto mb-3 h-8 w-8 text-bakery-pink-deep" />
+                    <p className="text-xs text-muted-foreground font-semibold">Estimated Time</p>
+                    <p className="text-lg font-bold text-bakery-chocolate mt-1">30-45 mins</p>
                   </div>
-                  <div className="rounded-xl bg-bakery-green/10 p-4">
-                    <Package className="mx-auto mb-2 h-6 w-6 text-bakery-green" />
-                    <p className="text-xs text-muted-foreground">Items</p>
-                    <p className="font-bold text-bakery-chocolate">{getItemCount()} cookies</p>
+                  <div className="rounded-2xl bg-gradient-to-br from-bakery-green/10 to-bakery-matcha/10 p-5 border border-bakery-green/20">
+                    <Package className="mx-auto mb-3 h-8 w-8 text-bakery-green" />
+                    <p className="text-xs text-muted-foreground font-semibold">Items</p>
+                    <p className="text-lg font-bold text-bakery-chocolate mt-1">{getItemCount()} cookies</p>
                   </div>
                 </div>
 
-                <div className="mb-6 w-full rounded-2xl border-2 border-dashed border-bakery-pink/30 p-4">
-                  <p className="text-sm text-muted-foreground">Delivering to</p>
-                  <p className="font-medium text-bakery-chocolate">{customerDetails.name}</p>
-                  <p className="text-sm text-muted-foreground">{customerDetails.address}</p>
+                <div className="mb-8 w-full rounded-2xl border-2 border-dashed border-bakery-pink/30 p-5 bg-white/50">
+                  <p className="text-sm text-muted-foreground font-semibold">Delivering to</p>
+                  <p className="font-bold text-bakery-chocolate text-lg mt-1">{customerDetails.name}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{customerDetails.address}</p>
                 </div>
 
                 <Button
                   onClick={handleCompleteOrder}
-                  className="w-full gap-2 bg-bakery-green py-6 font-bold text-white shadow-lg shadow-bakery-green/30 btn-press"
+                  className="w-full gap-2 bg-gradient-to-r from-bakery-green to-bakery-matcha py-7 font-bold text-white shadow-xl shadow-bakery-green/30 btn-press transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
                   size="lg"
                 >
                   <ShoppingBag className="h-5 w-5" />
