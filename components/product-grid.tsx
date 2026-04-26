@@ -1,11 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { cookies } from '@/lib/data'
+import type { Cookie } from '@/lib/db'
 import { ProductCard } from './product-card'
 import { Sparkles, Clock, Leaf, Star, Heart } from 'lucide-react'
 
-export function ProductGrid() {
+interface ProductGridProps {
+  cookies: Cookie[]
+}
+
+export function ProductGrid({ cookies }: ProductGridProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {

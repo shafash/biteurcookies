@@ -6,7 +6,8 @@ import { Plus, Check, ShoppingBag, Star, Sparkles, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useCartStore } from '@/lib/cart-store'
-import { formatPrice, type Cookie, addOns, type AddOn } from '@/lib/data'
+import { formatPrice, type Cookie, type AddOn } from '@/lib/db'
+import { useAddOns } from '@/lib/add-ons-context'
 
 interface ProductCardProps {
   cookie: Cookie
@@ -20,7 +21,8 @@ export function ProductCard({ cookie, index }: ProductCardProps) {
   const [showAddOns, setShowAddOns] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const cardRef = useRef<HTMLDivElement>(null)
-  const { addItem, openCart } = useCartStore()
+  const { addItem } = useCartStore()
+  const addOns = useAddOns()
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (cardRef.current) {

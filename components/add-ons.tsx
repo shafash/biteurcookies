@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { Star, Sparkles, Info, Plus, Heart } from 'lucide-react'
-import { addOns, formatPrice } from '@/lib/data'
+import { formatPrice, type AddOn } from '@/lib/db'
 
-export function AddOns() {
+interface AddOnsSectionProps {
+  addOns: AddOn[]
+}
+
+export function AddOnsSection({ addOns }: AddOnsSectionProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {

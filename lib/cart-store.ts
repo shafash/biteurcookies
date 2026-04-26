@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import type { Cookie, AddOn } from './data'
+import type { Cookie, AddOn } from './db'
 
 // Each cart item has a unique ID so the same cookie can be added multiple times with different add-ons
 export interface CartItem {
